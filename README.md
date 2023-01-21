@@ -9,8 +9,7 @@ Unofficial Docker image for Multi Theft Auto: San Andreas game server. Maintaine
 - This image is automatically built and published on Dockerhub as [`notfound/mtasa-server`](https://hub.docker.com/r/notfound/mtasa-server)
 - The base image is Debian Testing (slim) which ensures maximum compatibility and official support 
 - Total image size is oscillating around 100MiB
-- **64-bit server only**
-- On Windows, only the [**Docker Desktop with WSL 2 backend**](https://docs.docker.com/docker-for-windows/wsl/) is supported, so expect weird issues with different setup (been there, done that, big NOPE from me). On Linux there are no problems at all.
+- **arm64 server only**
 - The tags always reflect the specific version and build number of the MTA server which they contain, i.e. `1.5.7-20595-v4`
 
 
@@ -37,11 +36,6 @@ Unofficial Docker image for Multi Theft Auto: San Andreas game server. Maintaine
   - Ready for fastdl setups (hosting client files over external HTTP servers)
   - Fully prepared for running as a non-root user
 
-- For maximum compatibility with older scripts, the legacy native modules are also included in this image:
-  - Sockets Module - `ml_sockets.so`
-  - MySQL module - `mta_mysql.so`
-  
-  If you want to use them, just remember to [add proper entries to your server config](https://wiki.multitheftauto.com/wiki/Server_mtaserver.conf#module).
 
 - It's battle-tested: I'm using this image by myself in 4 different environments and I consider it production-ready :)
 
@@ -109,7 +103,7 @@ docker run --name mta-server \
 -p 22005:22005 \
 -v $(pwd)/mta-resources:/resources \        # mount mta resources dir
 -v $(pwd)/data:/data \                      # mount mta data dir (config, acl, banlist, internal DBs etc.)
-notfound/mtasa-server:1.5.7-20359-v17       # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415       # remember to adjust the tag name
 ```
 
 From powershell (basically the only difference is `pwd` syntax):
@@ -122,7 +116,7 @@ docker run --name mta-server \
 -p 22005:22005 \
 -v ${PWD}/mta-resources:/resources \        # mount mta resources dir
 -v ${PWD}/data:/data \                      # mount mta data dir (config, acl, banlist, internal DBs etc.)
-notfound/mtasa-server:1.5.7-20359-v17       # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415       # remember to adjust the tag name
 ```
 
 ## More examples
@@ -139,7 +133,7 @@ docker run --name mta-server \
 -p 22003:22003/udp \
 -p 22005:22005 \
 -v $(pwd)/mta-resources:/resources \
-notfound/mtasa-server:1.5.7-20359-v17 
+victoroy/mtasa-server-arm64:1.5.9-21415 
 ```
 
 #### Or with access to /data (mtaserver.conf, acl.xml etc.)
@@ -151,7 +145,7 @@ docker run --name mta-server \
 -p 22005:22005 \
 -v $(pwd)/mta-resources:/resources \
 -v $(pwd)/data:/data \
-notfound/mtasa-server:1.5.7-20359-v17 
+victoroy/mtasa-server-arm64:1.5.9-21415 
 ```
 
 ### Running as non-root user:
@@ -160,7 +154,7 @@ notfound/mtasa-server:1.5.7-20359-v17
 docker run --name mta-server \ 
 -u $(id -u):$(id -g)                        # set uid and gid of current user
 -t \                                        # allocate tty (always required)
-notfound/mtasa-server:1.5.7-20359-v17       # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415       # remember to adjust the tag name
 ```
 
 ### Running in the background (daemonized):
@@ -169,7 +163,7 @@ notfound/mtasa-server:1.5.7-20359-v17       # remember to adjust the tag name
 docker run --name mta-server \ 
 -d                                          # detach
 -t \                                        # allocate tty (always required)
-notfound/mtasa-server:1.5.7-20359-v17       # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415       # remember to adjust the tag name
 ```
 
 ### Expose resource-cache to setup external fastdl server
@@ -178,7 +172,7 @@ notfound/mtasa-server:1.5.7-20359-v17       # remember to adjust the tag name
 docker run --name mta-server \ 
 -t \                                        # allocate tty (always required)
 -v $(pwd)/resource-cache:/resource-cache \  # mount cache dir, you only need it if you have fastdl server setup
-notfound/mtasa-server:1.5.7-20359-v17       # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415       # remember to adjust the tag name
 ```
 
 ### Enforce server password on startup
@@ -188,7 +182,7 @@ docker run --name mta-server \
 -e MTA_SERVER_PASSWORD=mypassword
 -e MTA_SERVER_PASSWORD_REPLACE_POLICY=always  # always update the <password> entry in the active server config with the value of MTA_SERVER_PASSWORD
 -t \                                          # allocate tty (always required)
-notfound/mtasa-server:1.5.7-20359-v17         # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415         # remember to adjust the tag name
 ```
 
 ### Set server password on startup, but only if it's not already set in the config
@@ -198,7 +192,7 @@ docker run --name mta-server \
 -e MTA_SERVER_PASSWORD=mypassword
 -e MTA_SERVER_PASSWORD_REPLACE_POLICY=when-empty  # only update the <password> entry in the active server config if it's not already set
 -t \                                              # allocate tty (always required)
-notfound/mtasa-server:1.5.7-20359-v17             # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415             # remember to adjust the tag name
 ```
 
 `when-empty` is the default policy, so this can be simplified to just:
@@ -207,7 +201,7 @@ notfound/mtasa-server:1.5.7-20359-v17             # remember to adjust the tag n
 docker run --name mta-server \ 
 -e MTA_SERVER_PASSWORD=mypassword
 -t \                                              # allocate tty (always required)
-notfound/mtasa-server:1.5.7-20359-v17             # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415             # remember to adjust the tag name
 ```
 
 ### Automatically clear server password on startup if it's set in the config
@@ -216,7 +210,7 @@ notfound/mtasa-server:1.5.7-20359-v17             # remember to adjust the tag n
 docker run --name mta-server \ 
 -e MTA_SERVER_PASSWORD_REPLACE_POLICY=unless-empty  # only update the <password> entry in the active server config if it has some value
 -t \                                              # allocate tty (always required)
-notfound/mtasa-server:1.5.7-20359-v17             # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415             # remember to adjust the tag name
 ```
 
 ### Use custom config file
@@ -230,7 +224,7 @@ docker run --name mta-server \
 -e MTA_SERVER_CONFIG_FILE_NAME=mtaserver.mycustom.conf
 -t \                                              # allocate tty (always required)
 -v ${PWD}/data:/data \                            # mount mta data dir (config, acl, banlist, internal DBs etc.)
-notfound/mtasa-server:1.5.7-20359-v17             # remember to adjust the tag name
+victoroy/mtasa-server-arm64:1.5.9-21415             # remember to adjust the tag name
 ```
 
 
